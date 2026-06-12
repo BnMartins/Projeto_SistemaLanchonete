@@ -45,10 +45,10 @@ public class MainSistemaLachonete {
                     String telefone = usuario.next();
                     Thread.sleep(500);
                     Cliente cliente = new Cliente(proximoIdCliente, nome, telefone);
-                    proximoIdCliente++;
                     System.out.println("Cliente "+ nome +" cadastrado!");
                     Thread.sleep(500);
                     System.out.println("Id do Cliente: "+proximoIdCliente+" | Nome: "+nome+" | Telefone: "+ telefone);
+                    proximoIdCliente++;
                     Thread.sleep(500);
                     clienteService.cadastraCliente(cliente);
                     Thread.sleep(500);
@@ -79,11 +79,11 @@ public class MainSistemaLachonete {
                         break;
                     }
                     Produto produto = new Produto(proximoIdProduto, nomeProduto, preco, categoriaProduto);
-                    proximoIdProduto++;
                     System.out.println("Cliente "+ nomeProduto +" cadastrado!");
                     Thread.sleep(500);
                     System.out.println("Id do Produto: "+proximoIdProduto+" | Nome: "+nomeProduto+
                             " | Preço: "+preco+ "| Categoria do Produto: "+categoriaProduto);
+                    proximoIdProduto++;
                     Thread.sleep(500);
                     produtoService.cadastrarProduto(produto);
                     Thread.sleep(500);

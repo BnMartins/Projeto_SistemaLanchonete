@@ -45,11 +45,23 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return "Pedido #" + id +
-                "\nCliente: " + cliente.getNome() +
-                "\nQuantidade de Itens: " + itens.size() +
-                "\nTotal: " + calcularTotal() +
-                "\nFinalizado: " + finalizado; 
+        String texto = "Pedido #" + id +
+            "\nCliente: " + cliente.getNome() +
+            "\n\nItens:\n";
+
+        for (ItemPedido item : itens) {
+            texto += "- " +
+                item.getProduto().getNome() +
+                " x" +
+                item.getQuantidade() +
+                "\n";
+        }   
+
+        texto += "\nTotal: R$ " +
+            String.format("%.2f", calcularTotal()) +
+            "\nFinalizado: " + finalizado;
+
+        return texto;
     }
 
     public int getId() {
