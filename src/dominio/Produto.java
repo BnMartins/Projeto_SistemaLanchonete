@@ -15,7 +15,7 @@ public class Produto {
 
     @Override
     public String toString() {
-        return "Id: "+id + " | Nome: " + nome + " | Preço: " + preco;
+        return "Id: " + id + " | Nome: " + nome + " | PreÃ§o: R$ " + String.format("%.2f", preco) + " | Categoria: " + categoria;
     }
 
     public int getId() {
@@ -40,5 +40,13 @@ public class Produto {
 
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    public CategoriaProduto getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(CategoriaProduto categoria) {
+        this.categoria = categoria;
     }
 }
