@@ -46,10 +46,10 @@ public class Pedido {
     @Override
     public String toString() {
         return "Pedido #" + id +
-                " | Cliente: " + cliente.getNome() +
-                " | Quantidade de Itens: " + itens.size() +
-                " | Total: " + calcularTotal() +
-                " | Finalizado: " + finalizado;
+                "\nCliente: " + cliente.getNome() +
+                "\nQuantidade de Itens: " + itens.size() +
+                "\nTotal: " + calcularTotal() +
+                "\nFinalizado: " + finalizado; 
     }
 
     public int getId() {

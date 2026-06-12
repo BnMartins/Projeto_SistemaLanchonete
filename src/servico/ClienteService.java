@@ -28,6 +28,10 @@ public class ClienteService {
             System.out.println(addCliente);
         }
     }
+    
+    public boolean possuiCliente(){
+        return !clientes.isEmpty();
+    }
 
     public Cliente buscarClientePorId(int id){
         for (Cliente cliente : clientes) {

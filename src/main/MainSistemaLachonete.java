@@ -12,7 +12,7 @@ import servico.ProdutoService;
 import java.util.Scanner;
 
 public class MainSistemaLachonete {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException{
         ClienteService clienteService = new ClienteService();
         ProdutoService produtoService = new ProdutoService();
         PedidoService pedidoService = new PedidoService();
@@ -20,23 +20,21 @@ public class MainSistemaLachonete {
         int proximoIdCliente = 1;
         int proximoIdProduto = 1;
         int proximoIdPedido = 1;
-
-        while (true) {
-            Scanner usuario = new Scanner(System.in);
+        try (Scanner usuario = new Scanner(System.in)) {
+        while (true){
             System.out.println("========== Lanches BN ==========");
             System.out.println("1 - Cadastrar Cliente");
             System.out.println("2 - Cadastrar Produto");
             System.out.println("3 - Fazer Pedido");
-            System.out.println("4 - Adicionar itens ao pedido");
-            System.out.println("5 - Finalizar pedido");
-            System.out.println("6 - Listar Pedidos");
-            System.out.println("7 - Ver Faturamento");
+            System.out.println("4 - Finalizar pedido");
+            System.out.println("5 - Listar Pedidos");
+            System.out.println("6 - Ver Faturamento");
             System.out.println("0 - Sair");
             System.out.println("==============================");
-            System.out.print("Escolha uma das opÃ§Ãµes: ");
+            System.out.print("Escolha uma das opções: ");
             int opcao = usuario.nextInt();
             usuario.nextLine();
-            switch (opcao) {
+            switch (opcao){
                 case 1:
                     System.out.println("Abrindo cadastro Cliente...");
                     Thread.sleep(500);
@@ -47,11 +45,12 @@ public class MainSistemaLachonete {
                     String telefone = usuario.next();
                     Thread.sleep(500);
                     Cliente cliente = new Cliente(proximoIdCliente, nome, telefone);
-                    int idCliente = proximoIdCliente;
                     proximoIdCliente++;
-                    if (clienteService.cadastraCliente(cliente)) {
-                        System.out.println("Id do Cliente: " + idCliente + " | Nome: " + nome + " | Telefone: " + telefone);
-                    }
+                    System.out.println("Cliente "+ nome +" cadastrado!");
+                    Thread.sleep(500);
+                    System.out.println("Id do Cliente: "+proximoIdCliente+" | Nome: "+nome+" | Telefone: "+ telefone);
+                    Thread.sleep(500);
+                    clienteService.cadastraCliente(cliente);
                     Thread.sleep(500);
                     break;
                 case 2:
@@ -60,7 +59,7 @@ public class MainSistemaLachonete {
                     System.out.print("Digite o nome do Produto: ");
                     String nomeProduto = usuario.nextLine();
                     Thread.sleep(500);
-                    System.out.print("Digite o PreÃ§o do Produto: ");
+                    System.out.print("Digite o Preço do Produto: ");
                     double preco = usuario.nextDouble();
                     Thread.sleep(500);
                     System.out.println("Categoria do Produto");
@@ -69,114 +68,125 @@ public class MainSistemaLachonete {
                     System.out.println("(3) Sobremesa");
                     System.out.print("Qual a Categoria do Produto: ");
                     int categoria = usuario.nextInt();
-                    if (categoria == 1) {
+                    if (categoria == 1){
                         categoriaProduto = CategoriaProduto.LANCHE;
                     } else if (categoria == 2) {
                         categoriaProduto = CategoriaProduto.BEBIDA;
                     } else if (categoria == 3) {
                         categoriaProduto = CategoriaProduto.SOBREMESA;
-                    } else {
-                        System.out.println("OpÃ§Ã£o Invalida! Escolha uma opÃ§Ã£o Valida.");
+                    }else {
+                        System.out.println("Opção Invalida! Escolha uma opção Valida.");
                         break;
                     }
                     Produto produto = new Produto(proximoIdProduto, nomeProduto, preco, categoriaProduto);
-                    int idProduto = proximoIdProduto;
                     proximoIdProduto++;
-                    if (produtoService.cadastrarProduto(produto)) {
-                        System.out.println("Id do Produto: " + idProduto + " | Nome: " + nomeProduto +
-                                " | PreÃ§o: " + preco + " | Categoria: " + categoriaProduto);
-                    }
+                    System.out.println("Cliente "+ nomeProduto +" cadastrado!");
+                    Thread.sleep(500);
+                    System.out.println("Id do Produto: "+proximoIdProduto+" | Nome: "+nomeProduto+
+                            " | Preço: "+preco+ "| Categoria do Produto: "+categoriaProduto);
+                    Thread.sleep(500);
+                    produtoService.cadastrarProduto(produto);
                     Thread.sleep(500);
                     break;
-                case 3:
-                    System.out.println("ComeÃ§ando Pedido...");
+                case 3: 
+                    if (!clienteService.possuiCliente()) {
+                        Thread.sleep(500);
+                        System.out.println("Nenhum cliente encontrado!");
+                        break;
+                    }
+                    System.out.println("Começando Pedido...");
+                    Thread.sleep(500);
                     clienteService.listarClientes();
-                    System.out.print("Selecione o id do Cliente que quer comeÃ§ar o pedido: ");
+                    System.out.print("Selecione o id do Cliente que quer começar o pedido: ");
                     int idClientePedido = usuario.nextInt();
                     Cliente clientePedido = clienteService.buscarClientePorId(idClientePedido);
-                    if (clientePedido != null) {
-                        Pedido pedido = new Pedido(proximoIdPedido, clientePedido);
-                        pedidoService.criarPedido(pedido);
+                    if (clientePedido == null) {
+                        System.out.println("Cliente não encontrado!");
+                        break;
+                    }
+                    Pedido pedidoAtual = pedidoService.buscarPedidoAbertoPorCliente(clientePedido.getId());
+                    if (pedidoAtual == null) {
+                        pedidoAtual = new Pedido(proximoIdPedido, clientePedido);
+                        pedidoService.criarPedido(pedidoAtual);
                         proximoIdPedido++;
                     } else {
-                        System.out.println("Cliente nÃ£o encontrado");
+                        System.out.println("Pedido já aberto para esse Cliente! Adicionando itens ao pedido #" + pedidoAtual.getId());
                     }
+                    System.out.println("Abrindo Menu de Produtos...");
+                    Thread.sleep(500);
+                    String resposta1;
+                    do {
+                        produtoService.listarProdutos();
+                        Thread.sleep(500);
+                        System.out.print("Escolha o id do Produto que quer adicionar ao Pedido: ");
+                        int idProduto = usuario.nextInt();
+                        Produto produtoEscolhido = produtoService.buscarProdutoPorId(idProduto);
+                        if (produtoEscolhido == null) {
+                            System.out.println("Produto não encontrado!");
+                            break;
+                        }
+                        System.out.print("Digite a quantidade do produto: ");
+                        int quantidade = usuario.nextInt();
+                        usuario.nextLine();
+                        if (quantidade <= 0) {
+                            System.out.println("Quantidade inválida!");
+                            break;
+                        }
+                        pedidoAtual.adicionarItem(new ItemPedido(produtoEscolhido, quantidade));
+                        System.out.println("Produto adicionado com sucesso!");
+                        System.out.println("Quer continuar? [Sim/Não]");
+                        resposta1 = usuario.nextLine(); 
+                    } while (resposta1.equalsIgnoreCase("sim"));
+                    Thread.sleep(500);
                     break;
                 case 4:
                     System.out.println("Abrindo Menu de Pedidos...");
-                    Thread.sleep(500);
                     pedidoService.listarPedidos();
                     Thread.sleep(500);
-                    System.out.print("Escolha o id do pedido que quer adicionar produtos: ");
-                    int addPedido = usuario.nextInt();
-                    Pedido pedidoAtual = pedidoService.buscarPedidoPorId(addPedido);
-                    if (pedidoAtual == null) {
-                        System.out.println("Pedido nÃ£o encontrado");
-                        break;
-                    }
-                    if (pedidoAtual.isFinalizado()) {
-                        System.out.println("NÃ£o Ã© possÃ­vel adicionar itens a um pedido jÃ¡ finalizado!");
-                        break;
-                    }
-                    produtoService.listarProdutos();
-                    Thread.sleep(500);
-                    System.out.print("Escolha o id do produto que quer adicionar ao pedido: ");
-                    int addProduto = usuario.nextInt();
-                    Produto produtoEscolhido = produtoService.buscarProdutoPorId(addProduto);
-                    if (produtoEscolhido == null) {
-                        System.out.println("Produto nÃ£o encontrado");
-                        break;
-                    }
-                    System.out.print("Escolha a quantidade do Produto que quer adicionar no Pedido: ");
-                    int quantidade = usuario.nextInt();
-                    if (quantidade <= 0) {
-                        System.out.println("Quantidade invÃ¡lida!");
-                        break;
-                    }
-                    ItemPedido itemPedido = new ItemPedido(produtoEscolhido, quantidade);
-                    pedidoAtual.adicionarItem(itemPedido);
-                    System.out.println("Produto adicionado com sucesso!");
-                    break;
-                case 5:
-                    System.out.println("Abrindo Menu de Pedidos...");
-                    pedidoService.listarPedidos();
-                    Thread.sleep(500);
-                    System.out.print("Deseja finalizar qual Pedido? ");
+                    System.out.print("Deseja Finalizar qual Pedido?");
                     int finalizarPedido = usuario.nextInt();
                     usuario.nextLine();
-                    Pedido pedidoFinalizar = pedidoService.buscarPedidoPorId(finalizarPedido);
-                    if (pedidoFinalizar == null) {
-                        System.out.println("Pedido nÃ£o encontrado!");
+                    Pedido pedido = pedidoService.buscarPedidoPorId(finalizarPedido);
+                    if (pedido != null) {
+                        Thread.sleep(500);
+                        System.out.println("Deseja Finalizar o Pedido " + finalizarPedido + "?");
+                        String resposta2 = usuario.nextLine();
+                        if (resposta2.equalsIgnoreCase("sim")) {
+                            Thread.sleep(500);
+                            pedido.finalizarPedido();
+                        } else if (resposta2.equalsIgnoreCase("não")){
+                            Thread.sleep(500);
+                            System.out.println("Pedido não Finalizado...");
+                            break;
+                        }else {
+                            Thread.sleep(500);
+                            System.out.println("Respota Inválida!");
+                        }
+                    } else {
+                        Thread.sleep(500);
+                        System.out.println("Pedido não encontrado!");
                         break;
                     }
-                    System.out.println("Deseja finalizar o Pedido " + finalizarPedido + "? (sim/nÃ£o)");
-                    String resposta = usuario.nextLine();
-                    if (resposta.equalsIgnoreCase("sim")) {
-                        pedidoFinalizar.finalizarPedido();
-                        System.out.println("Total do pedido: R$ " + String.format("%.2f", pedidoFinalizar.calcularTotal()));
-                    } else if (resposta.equalsIgnoreCase("nÃ£o") || resposta.equalsIgnoreCase("nao")) {
-                        System.out.println("Pedido nÃ£o finalizado...");
-                    } else {
-                        System.out.println("Resposta invÃ¡lida!");
-                    }
                     break;
-                case 6:
-                    System.out.println("Abrindo Lista de Pedidos Finalizados");
+                case 5:
+                    System.out.println("Abrindo Lista de Pedidos");
                     Thread.sleep(500);
                     pedidoService.pedidoFinalizado();
+                    System.out.println("=====================");
                     break;
-                case 7:
+                case 6:
                     System.out.println("Abrindo o Faturamento da Lanchonete!");
                     Thread.sleep(500);
-                    double faturamento = pedidoService.calcularFaturamento();
-                    System.out.println("Faturamento total (pedidos finalizados): R$ " + String.format("%.2f", faturamento));
+                    double valor = pedidoService.calcularFaturamento();
+                    System.out.println("Faturamento da Lanchonete: R$ " + String.format("%.2f", valor));
                     break;
                 case 0:
                     System.out.println("Saindo...");
                     return;
                 default:
-                    System.out.println("OpÃ§Ã£o Invalida! Escolha uma opÃ§Ã£o Valida!");
+                    System.out.println("Opção Invalida! Escolha uma opção Valida!");
             }
+        }
         }
     }
 }

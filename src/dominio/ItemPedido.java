@@ -9,13 +9,10 @@ public class ItemPedido {
         this.quantidade = quantidade;
     }
 
-    public double calcularSubTotal() {
-        return produto.getPreco() * quantidade;
-    }
-
-    @Override
-    public String toString() {
-        return quantidade + "x " + produto.getNome() + " (R$ " + String.format("%.2f", calcularSubTotal()) + ")";
+    public double calcularSubTotal(){
+        double subTotal;
+        subTotal = produto.getPreco() * quantidade;
+        return subTotal;
     }
 
     public Produto getProduto() {
