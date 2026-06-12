@@ -1,6 +1,6 @@
 # 🍔 Sistema Lanchonete (Lanches BN)
 
-Sistema em terminal de gerenciamento de lanchonete desenvolvido em **Java**. O sistema permite gerenciar clientes, produtos, pedidos e faturamento de forma simples e direta pelo console.
+Sistema em terminal de gerenciamento de lanchonete desenvolvido em **Java**. O sistema permite gerenciar clientes, produtos, pedidos e faturamento de forma simples e direta pelo console, para treinar e colocar em pratica o que eu aprendi até agora no curso de Java do DevDojo(Maratona Java virando no Jiraya)
 
 ---
 
