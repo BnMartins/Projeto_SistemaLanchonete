@@ -10,7 +10,7 @@ public class PedidoService {
     public boolean criarPedido(Pedido pedido) {
         for (Pedido pedidoExistente : pedidos) {
             if (pedidoExistente.getId() == pedido.getId()) {
-                System.out.println("Pedido não criado, pois já existe");
+                System.out.println("Pedido nÃ£o criado, pois jÃ¡ existe");
                 return false;
             }
         }
@@ -20,18 +20,31 @@ public class PedidoService {
     }
 
     public void listarPedidos() {
-            if (pedidos.isEmpty()) {
-                System.out.println("Lista de Pedido vazia!");
-                return;
+        if (pedidos.isEmpty()) {
+            System.out.println("Lista de Pedido vazia!");
+            return;
+        }
+        for (Pedido addPedido : pedidos) {
+            System.out.println(addPedido);
+        }
+    }
+
+    public void pedidoFinalizado() {
+        boolean encontrouFinalizado = false;
+        for (Pedido pedido : pedidos) {
+            if (pedido.isFinalizado()) {
+                System.out.println(pedido);
+                encontrouFinalizado = true;
             }
-            for (Pedido addPedido : pedidos) {
-                System.out.println(addPedido);
-            }
+        }
+        if (!encontrouFinalizado) {
+            System.out.println("Nenhum pedido finalizado encontrado!");
+        }
     }
 
     public Pedido buscarPedidoPorId(int id) {
         for (Pedido pedido : pedidos) {
-            if (pedido.getId() == id){
+            if (pedido.getId() == id) {
                 return pedido;
             }
         }
@@ -41,7 +54,9 @@ public class PedidoService {
     public double calcularFaturamento() {
         double valorTotal = 0;
         for (Pedido pedido : pedidos) {
-            valorTotal += pedido.calcularTotal();
+            if (pedido.isFinalizado()) {
+                valorTotal += pedido.calcularTotal();
+            }
         }
         return valorTotal;
     }
